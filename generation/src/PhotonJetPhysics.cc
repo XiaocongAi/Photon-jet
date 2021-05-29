@@ -21,6 +21,8 @@ void PhotonJetPhysics::ConstructParticle()
 	G4cout << "PhotonJetPhysics::ConstructParticle() called" << G4endl;
 	fDecayPhysicsList->ConstructParticle();
 	Newaxion1::axion1Definition(fDarkPhotonMass);
+	Newaxion2::axion2Definition(fDarkPhotonMass);
+	Newscalar1::scalar1Definition(fDarkPhotonMass);
 }
 
 void PhotonJetPhysics::ConstructProcess()

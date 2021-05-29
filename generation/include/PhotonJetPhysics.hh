@@ -6,6 +6,8 @@
 #include "globals.hh"
 
 #include "Newaxion1.hh"
+#include "Newaxion2.hh"
+#include "Newscalar1.hh"
 
 class PhotonJetPhysics: public G4VPhysicsConstructor
 {
