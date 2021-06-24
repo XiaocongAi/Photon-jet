@@ -111,9 +111,17 @@ void DetectorConstruction::DefineMaterials()
 G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 {
   // Geometry parameters
-  G4int nofLayers = 80;
-  G4double absoThickness = 2.*mm;
-  G4double gapThickness =  4.*mm;
+  G4int nofLayers = 119;
+  // 1: 3.2533 for lead:liquidArgon will give X0 = 21.08 mm
+  // 4.2533*119 = 506.143 mm
+  // 506.143/21.08 = 24.01 X0
+
+  // PreSampling layer: 24.01*1.7/24 = 1.7 X0, 35.852 mm
+  // Layer0: 4.3 X0, 90.684 mm 
+  // Layer1: 16.0 X0, 337.429 mm 
+  // Layer2: 2 X0, 42.179 mm 
+  G4double absoThickness = 1.*mm;
+  G4double gapThickness =  3.2533*mm;
   G4double calorSizeXY  = 100.*cm;
 
   G4double layerThickness = absoThickness + gapThickness;
@@ -138,7 +146,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   //
   G4VSolid* worldS 
     = new G4Box("World",           // its name
-                 worldSizeXY/2, worldSizeXY/2, worldSizeZ/2); // its size
+                 worldSizeXY/2, worldSizeXY/2,  2000*mm); // its size
                          
   G4LogicalVolume* worldLV
     = new G4LogicalVolume(
@@ -149,7 +157,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
   G4VPhysicalVolume* worldPV
     = new G4PVPlacement(
                  0,                // no rotation
-                 G4ThreeVector(),  // at (0,0,0)
+                 G4ThreeVector(0, 0, 0),  // at (0,0,0)
                  worldLV,          // its logical volume                         
                  "World",          // its name
                  0,                // its mother  volume
@@ -172,7 +180,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                    
   new G4PVPlacement(
                  0,                // no rotation
-                 G4ThreeVector(),  // at (0,0,0)
+                 G4ThreeVector(0, 0, 1464.148*mm+calorThickness/2),  // at (0,0,0)
                  calorLV,          // its logical volume                         
                  "Calorimeter",    // its name
                  worldLV,          // its mother  volume

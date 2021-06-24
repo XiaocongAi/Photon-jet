@@ -53,39 +53,58 @@ SteppingAction::~SteppingAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 int SteppingAction::WhichZBin(double zpos){
-
-  //zsegmentation = TH1F("","",3,np.array([-240.,-150.,197.,240.]))
-  if (zpos < -150.) return 0;
-  else if (zpos < 197.) return 1;
-  else return 2;
+   
+   std::array<double, 5> zedges = {1464.148, 1500, 1590.684, 1928.113, 1970.292};
+   //zsegmentation = TH1F("","",3,np.array([-240.,-150.,197.,240.]))
+ 
+  if (zpos < zedges[1]) return 0;
+  else if (zpos < zedges[2]) return 1;
+  else if (zpos < zedges[3]) return 2;
+  else return 3;
 
 }
 
-int SteppingAction::WhichXYbin(double xpos, double ypos, int zbin){
+int SteppingAction::WhichXYbin(double xpos, double ypos, double zpos, int zbin){
   int xbin = -1;
   int ybin = -1;
-  int nbins1x = 3;
-  int nbins2x = 12;
-  int nbins3x = 12;
-  int nbins1y = 96;
-  int nbins2y = 12;
-  int nbins3y = 6;
-  int nbinsx[]={nbins1x,nbins2x,nbins3x};
-  int nbinsy[]={nbins1y,nbins2y,nbins3y};
+
+  int nbins0x = 4;
+  int nbins0y = 16;
+  
+  int nbins1x = 4;
+  int nbins1y = 128;
+  
+  int nbins2x = 16;
+  int nbins2y = 16;
+ 
+  int nbins3x = 16;
+  int nbins3y = 8;
+
+  int nbinsx[]={nbins0x, nbins1x, nbins2x, nbins3x};
+  int nbinsy[]={nbins0y, nbins1y, nbins2y, nbins3y};
+
+  std::array<double, 4> dphi = {0.1, 0.098, 0.0245, 0.0245};
+  std::array<double, 4> dtheta = {0.025, 0.003125, 0.025, 0.05};
+
   for (int i=1; i<=nbinsx[zbin]; i++){
-    if ((xpos < -240 + i*480/nbinsx[zbin]) && (xpos > -240)){
+    // Get the phi angle
+    double phi = std::atan(xpos/zpos);
+    if( (phi > -1.0/2.* nbinsx[zbin]*dphi[zbin]) and ( phi < -1.0/2.* nbinsx[zbin]*dphi[zbin] + i*dphi[zbin])){ 
       xbin = i - 1;
       break;
     }
   }
   for (int i=1; i<=nbinsy[zbin]; i++){
-    if ((ypos < -240 +i*480/nbinsy[zbin]) && (ypos > -240)){
+    // Get the theta angle
+    double theta = std::atan(ypos/zpos);
+    if( (theta > -1.0/2.* nbinsy[zbin]*dtheta[zbin]) and ( theta < -1.0/2.* nbinsy[zbin]*dtheta[zbin] + i*dtheta[zbin])){   
       ybin = i - 1;
       break;
     }
   }
 
 
+  int lvl0 = nbins0x * nbins0y;
   int lvl1 = nbins1x * nbins1y;
   int lvl2 = nbins2x * nbins2y;
   int lvl3 = nbins3x * nbins3y;
@@ -93,17 +112,17 @@ int SteppingAction::WhichXYbin(double xpos, double ypos, int zbin){
 
 
   if ((xbin == -1) || (ybin == -1)) {
-    return lvl1 + lvl2 + lvl3 + zbin;
+    return lvl0 + lvl1 + lvl2 + lvl3 + zbin;
   }
 
   if (zbin == 0) {
-    return xbin * nbins1y + ybin;
-  } 
-  else if (zbin == 1) {
-    return lvl1 + (xbin * nbins2y + ybin);
-  }
-  else {
-    return (lvl1 + lvl2) + (xbin * nbins3y + ybin);
+    return xbin * nbins0y + ybin; // eta-major
+  } else if (zbin == 1) {
+    return lvl0 + (xbin * nbins1y + ybin);
+  } else if (zbin == 2) {
+    return (lvl0 + lvl1) + (xbin * nbins2y + ybin);
+  } else {
+    return (lvl0 + lvl1 + lvl2) + (xbin * nbins3y + ybin);
   }
 
 
@@ -139,7 +158,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
   //G4cout << "sqr " << pos1.z() << " " << pos2.z() << " " << pos1.x() << " " << pos2.x() << " " << edep << " " << step->GetTrack()->GetDefinition()->GetParticleName() << " " << step->GetTrack()->GetKineticEnergy() << G4endl;
       
   //G4cout << "sqr " << pos1.x() << " " << pos1.y() << " " << pos1.z() << " " << edep << G4endl;
-  int mybin = WhichXYbin(pos1.x(),pos1.y(),WhichZBin(pos1.z()));
+  int mybin = WhichXYbin(pos1.x(),pos1.y(), pos1.z(), WhichZBin(pos1.z()));
   // int mybin = 0;
   //G4cout << "zbin " << WhichZBin(pos1.z()) << " " << mybin << " " << mybin%100 << std::endl;
   

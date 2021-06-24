@@ -50,7 +50,7 @@ public:
 
   virtual void UserSteppingAction(const G4Step* step);
   int WhichZBin(double zpos);
-  int WhichXYbin(double xpos, double ypos, int zbin);
+  int WhichXYbin(double xpos, double ypos, double zpos, int zbin);
 
 private:
   const DetectorConstruction* fDetConstruction;
