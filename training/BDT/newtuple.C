@@ -222,7 +222,7 @@ double getDeltaE(const std::vector<Cell>& cells){
     std::cout<<"Failed to find the minimum cell between maximum and second maximum" << std::endl;
   }
  
-  return (maxEnergy - minEnergyBetween);
+  return (smaxEnergy - minEnergyBetween);
 
 }
 
