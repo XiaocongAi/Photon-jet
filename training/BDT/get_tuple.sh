@@ -1,4 +1,5 @@
 particles=("axion1" "axion2" "scalar1" "gamma" "electron" "pi0")
+#date=08-04-21-20
 date=08-12-21-20
 
 rootpath=/nfs/dust/atlas/user/xiaocong/photonJet/generation/output
@@ -11,7 +12,7 @@ for ((m=0; m<${#particles[@]};++m)); do
   
    echo "processing file: $filepath/$filename"
    
-   exe="root -lq 'newtuple.C(\"${filepath}\", \"${filename}\")'"
+   exe="root -q 'newtuple.C(\"${filepath}\", \"${filename}\")'"
    echo $exe 
    eval $exe
 

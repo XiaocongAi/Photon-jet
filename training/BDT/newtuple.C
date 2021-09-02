@@ -64,6 +64,8 @@ int get_x(int myindex, int ybin, int zbin){
         return (myindex - lvl0 - lvl1 - lvl2 - ybin)/nbins3y;
     } 
 
+
+
 struct Cell{
   Cell(double eta_, double phi_, double energy_, int etaBin_, int phiBin_, int ilayer_):eta(eta_), phi(phi_), energy(energy_), etaBin(etaBin_), phiBin(phiBin_), ilayer(ilayer_){};
  
@@ -74,6 +76,8 @@ struct Cell{
   int phiBin = 0;
   int ilayer =0;
 };
+
+
 
 double getRatio(const std::vector<Cell>& cells, int window_eta_central, int window_phi_central, int window_eta_all, int window_phi_all){
    // Note this assumes the input cells are already sorted
@@ -334,8 +338,8 @@ int newtuple(TString path = "../../../generation/output/08-04-21-20/root/", TStr
             tin->SetBranchAddress(name,&(cells[icell]));
         }
         // Loop over all the events
-        for(int ievt=0;ievt<100;++ievt){
-        //for(int ievt=0;ievt<tin->GetEntries();++ievt){
+        //for(int ievt=0;ievt<100;++ievt){
+        for(int ievt=0;ievt<tin->GetEntries();++ievt){
             prelayer_cells.clear();
             firstlayer_cells.clear();
             secondlayer_cells.clear();
