@@ -37,6 +37,7 @@ int get_z(int myindex){
         return 0;
     }
 
+// get eta bin
 int get_y(int myindex,int zbin){
     if (myindex >=960)
         return -1;
@@ -51,6 +52,7 @@ int get_y(int myindex,int zbin){
     } 
 
 
+// get phi bin
 int get_x(int myindex, int ybin, int zbin){
     if (myindex >=960)
         return -1;
@@ -146,6 +148,7 @@ double getWidthIndex(const std::vector<Cell>& cells, int window_eta){
    const auto& maxCell = cells.front();
    const auto& maxEtaBin = maxCell.etaBin;
    const auto& maxPhiBin = maxCell.phiBin;
+   //std::cout<<"maxEnergy " << maxCell.energy << ", maxEta " << maxEtaBin <<", maxPhi " << maxPhiBin << std::endl;
  
    double total_e=0, energy_weighted_eta_index2=0; 
    for(const auto& cell : cells){
@@ -405,7 +408,7 @@ int newtuple(TString path = "../../../generation/output/08-04-21-20/root/", TStr
                     thirdlayer_y2+=yvalue*yvalue*cells[icell];
                     thirdlayer_cell+=icell*cells[icell];
                     thirdlayer_cell2+=icell*icell*cells[icell];
-                    thirdlayer_cells.push_back(Cell(xvalue, yvalue, cells[icell], xbin, ybin, zbin));
+                    thirdlayer_cells.push_back(Cell(yvalue, xvalue, cells[icell], ybin, xbin, zbin));
                 }
                 if(zbin==2) {
                     secondlayer_e+=cells[icell];
@@ -418,7 +421,7 @@ int newtuple(TString path = "../../../generation/output/08-04-21-20/root/", TStr
                     secondlayer_y2+=yvalue*yvalue*cells[icell];
                     secondlayer_cell+=icell*cells[icell];
                     secondlayer_cell2+=icell*icell*cells[icell];
-                    secondlayer_cells.push_back(Cell(xvalue, yvalue, cells[icell], xbin, ybin, zbin));
+                    secondlayer_cells.push_back(Cell(yvalue, xvalue, cells[icell], ybin, xbin, zbin));
                 }
                 if(zbin==1) {
                     firstlayer_e+=cells[icell];
@@ -431,7 +434,7 @@ int newtuple(TString path = "../../../generation/output/08-04-21-20/root/", TStr
                     firstlayer_y2+=yvalue*yvalue*cells[icell];
                     firstlayer_cell+=icell*cells[icell];
                     firstlayer_cell2+=icell*icell*cells[icell];
-                    firstlayer_cells.push_back(Cell(xvalue, yvalue, cells[icell], xbin, ybin, zbin));
+                    firstlayer_cells.push_back(Cell(yvalue, xvalue, cells[icell], ybin, xbin, zbin));
                 }
                 if(zbin==0) {
                     prelayer_e+=cells[icell];
@@ -444,7 +447,7 @@ int newtuple(TString path = "../../../generation/output/08-04-21-20/root/", TStr
                     prelayer_y2+=yvalue*yvalue*cells[icell];
                     prelayer_cell+=icell*cells[icell];
                     prelayer_cell2+=icell*icell*cells[icell];
-                    prelayer_cells.push_back(Cell(xvalue, yvalue, cells[icell], xbin, ybin, zbin));
+                    prelayer_cells.push_back(Cell(yvalue, xvalue, cells[icell], ybin, xbin, zbin));
                 }
  
                 if(cells[icell]>0){
