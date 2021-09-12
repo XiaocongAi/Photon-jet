@@ -120,16 +120,17 @@ gStyle.SetPadBottomMargin(0.15);
 
 histDict = {}
 
-inputDir="/nfs/dust/atlas/user/xiaocong/photonJet/generation/output/06-24-21-00/root/"
+inputDir="/nfs/dust/atlas/user/xiaocong/photonJet/generation/output/08-04-21-20/root/"
 
-inputFiles = [ "axion1_60-500GeV_20k.root", "axion2_60-500GeV_20k.root", "scalar1_60-500GeV_20k.root" ]
+inputFiles = [ "axion1_40-250GeV_100k.root", "axion2_40-250GeV_100k.root", "scalar1_40-250GeV_100k.root", "gamma_40-250GeV_100k.root", "pi0_40-250GeV_100k.root" ]
+#inputFiles = [ "gamma_40-250GeV_100k.root", "pi0_40-250GeV_100k.root" ]
 
-outputDir="/nfs/dust/atlas/user/xiaocong/photonJet/generation/plots/"
+outputDir="/nfs/dust/atlas/user/xiaocong/photonJet/generation/plots_test/"
 
 #suffix="axion1_"
 #suffix="electron_"
 #suffix="100GeV_"
-suffix="60-500GeV_"
+suffix="40-250GeV_"
 #suffix="1TeV_"
 
 Fraction_in_thirdlayer = []
@@ -175,7 +176,8 @@ for iFile in range(len(inputFiles)):
 	zsegmentation.GetXaxis().SetTitle("Layer");
 	zsegmentation.GetYaxis().SetTitle("Energy [GeV]");
 	setHistStyle(zsegmentation,colors[iFile],markers[iFile])
-	#Layer0: 4x16 (phixeta)
+
+	#PreSampling layer: 4x16 (phixeta)
 	sampling0_eta = TH2F("","",4,-0.1*2,0.1*2, 16,-0.025*8, 0.025*8)
 	sampling0_eta.GetXaxis().SetTitle("Phi");
 	sampling0_eta.GetYaxis().SetTitle("Eta");
@@ -183,6 +185,10 @@ for iFile in range(len(inputFiles)):
 	sampling1_eta = TH2F("","",4,-0.098*2,0.098*2, 128,-0.003125*64, 0.003125*64)
 	sampling1_eta.GetXaxis().SetTitle("Phi");
 	sampling1_eta.GetYaxis().SetTitle("Eta");
+        if ("pi0" in inputFile) or ("gamma" in inputFile):	
+        	sampling1_eta.GetYaxis().SetRangeUser(-0.02, 0.02);
+        else:
+        	sampling1_eta.GetYaxis().SetRangeUser(-0.05, 0.05);
 	#Layer2: 16x16 (phixeta)
 	sampling2_eta = TH2F("","",16,-0.0245*8, 0.0245*8, 16,-0.025*8, 0.025*8)
 	sampling2_eta.GetXaxis().SetTitle("Phi");
@@ -216,7 +222,7 @@ for iFile in range(len(inputFiles)):
         Front_lateral[iFile].GetXaxis().SetTitle("Energy weighted size");
         Front_lateral[iFile].GetYaxis().SetTitle("Entries");
         setHistStyle(Front_lateral[iFile],colors[iFile],markers[iFile])
-        Front_lateral_width.append(TH1F("Front_lateral_width_{0}".format(outputFile),"",50,0,0.2))
+        Front_lateral_width.append(TH1F("Front_lateral_width_{0}".format(outputFile),"",25,0,0.1))
         Front_lateral_width[iFile].GetXaxis().SetTitle("Sigma of energy weighted size");
         Front_lateral_width[iFile].GetYaxis().SetTitle("Entries");
         setHistStyle(Front_lateral_width[iFile],colors[iFile],markers[iFile])
@@ -225,7 +231,7 @@ for iFile in range(len(inputFiles)):
         Middle_lateral[iFile].GetXaxis().SetTitle("Energy weighted size");
         Middle_lateral[iFile].GetYaxis().SetTitle("Entries");
         setHistStyle(Middle_lateral[iFile],colors[iFile],markers[iFile])
-        Middle_lateral_width.append(TH1F("Middle_lateral_width_{0}".format(outputFile),"",200,0,0.2))
+        Middle_lateral_width.append(TH1F("Middle_lateral_width_{0}".format(outputFile),"",100,0,0.05))
         Middle_lateral_width[iFile].GetXaxis().SetTitle("Sigma of energy weighted size");
         Middle_lateral_width[iFile].GetYaxis().SetTitle("Entries");
         setHistStyle(Middle_lateral_width[iFile],colors[iFile],markers[iFile])
@@ -234,7 +240,7 @@ for iFile in range(len(inputFiles)):
         Back_lateral[iFile].GetXaxis().SetTitle("Energy weighted size");
         Back_lateral[iFile].GetYaxis().SetTitle("Entries");
         setHistStyle(Back_lateral[iFile],colors[iFile],markers[iFile])
-        Back_lateral_width.append(TH1F("Back_lateral_width_{0}".format(outputFile),"",200,0,0.2))
+        Back_lateral_width.append(TH1F("Back_lateral_width_{0}".format(outputFile),"",200,0,0.1))
         Back_lateral_width[iFile].GetXaxis().SetTitle("Sigma of energy weighted size");
         Back_lateral_width[iFile].GetYaxis().SetTitle("Entries");
         setHistStyle(Back_lateral_width[iFile],colors[iFile],markers[iFile])
@@ -263,7 +269,7 @@ for iFile in range(len(inputFiles)):
         legs[11].AddEntry(Shower_Depth_width[iFile], outputFile, "l") 
 	
 	#Loop over all events
-        for i in range(min(10,mytree.GetEntries())):
+        for i in range(min(100,mytree.GetEntries())):
         #for i in range(mytree.GetEntries()):
 	    mytree.GetEntry(i)
 	    if (i%100==0):
@@ -341,21 +347,26 @@ for iFile in range(len(inputFiles)):
 
 	    if (pre_energy > 0):
 	        PreSam_lateral[iFile].Fill(pre_layer_X/pre_energy)
-	        PreSam_lateral_width[iFile].Fill((pre_layer_X2/pre_energy - (pre_layer_X/pre_energy)**2)**0.5)
-	        pass
+                if pre_layer_X2/pre_energy - (pre_layer_X/pre_energy)**2 > 0:
+			PreSam_lateral_width[iFile].Fill((pre_layer_X2/pre_energy - (pre_layer_X/pre_energy)**2)**0.5)
+		pass
 	    if (front_energy > 0):
 	        Front_lateral[iFile].Fill(first_layer_X/front_energy)
-	        Front_lateral_width[iFile].Fill((first_layer_X2/front_energy - (first_layer_X/front_energy)**2)**0.5)
+	        if first_layer_X2/front_energy - (first_layer_X/front_energy)**2 > 0 : 
+			Front_lateral_width[iFile].Fill((first_layer_X2/front_energy - (first_layer_X/front_energy)**2)**0.5)
 	        pass
 	    if (middle_energy > 0):
 	        Middle_lateral[iFile].Fill(second_layer_X/middle_energy)
-	        Middle_lateral_width[iFile].Fill(((second_layer_X2/middle_energy) - (second_layer_X/middle_energy)**2)**0.5)
+		if second_layer_X2/middle_energy - (second_layer_X/middle_energy)**2 > 0 : 
+		        Middle_lateral_width[iFile].Fill(((second_layer_X2/middle_energy) - (second_layer_X/middle_energy)**2)**0.5)
 	        pass
 	    if (back_energy > 0):
 	        Back_lateral[iFile].Fill(third_layer_X/back_energy)
-	        Back_lateral_width[iFile].Fill(((third_layer_X2/back_energy) - (third_layer_X/back_energy)**2)**0.5)
+                if third_layer_X2/back_energy - (third_layer_X/back_energy)**2 > 0 :	
+		        Back_lateral_width[iFile].Fill(((third_layer_X2/back_energy) - (third_layer_X/back_energy)**2)**0.5)
 	        pass
-	    Shower_Depth_width[iFile].Fill((lateral_depth2/total_energy - (lateral_depth/total_energy)**2)**0.5)
+            if lateral_depth2/total_energy - (lateral_depth/total_energy)**2 > 0 : 
+		    Shower_Depth_width[iFile].Fill((lateral_depth2/total_energy - (lateral_depth/total_energy)**2)**0.5)
 	    pass
 	
         try :
@@ -370,13 +381,15 @@ for iFile in range(len(inputFiles)):
 	
         # canvas1
         print(c1Name) 
-	c1 = TCanvas(c1Name,"c1",1000,800)
+	c1 = TCanvas(c1Name,"c1",1600,1000)
 	c1.Divide(2,2)
 	c1.cd(1);
 	zsegmentation.Draw()
 	c1.cd(2);
+	gPad.SetLogz()
 	sampling1_eta.Draw("colz")
 	c1.cd(3);
+	gPad.SetLogz()
 	sampling2_eta.Draw("colz")
 	c1.cd(4);
 	gPad.SetLogz()
