@@ -293,6 +293,8 @@ def main():
 #    print (classification_report(y_test, y_predicted, target_names=["background", "signal","background1"]))
 #    print ("Area under ROC curve: %.4f"%(roc_auc_score(y_test, bdt.decision_function(X_test),multi_class="ovo")))
 
+    #The dimension of decisions1 is equal to the number of labels (one-vs-all for each label)
+    # The colomn i is the score for distinguishing the label i vs. others
     decisions1 = bdt.decision_function(X_train)
     decisions2 = bdt.decision_function(X_test)
     #print("decisions 1 size ", decisions1.shape[1]) 
@@ -305,6 +307,7 @@ def main():
     joblib.dump(bdt, './gbdt_results_9var/'+output+'/'+filepath+'/bdt_model.pkl')
 
 
+    #Get 0 or 1 indicating the first/second/third cololum has label equaling to 0/1/2 or not
     y_train = label_binarize(y_train, classes = [0, 1, 2])
     y_test = label_binarize(y_test, classes = [0, 1, 2])
     y_predicted = label_binarize(y_predicted, classes = [0, 1, 2])
