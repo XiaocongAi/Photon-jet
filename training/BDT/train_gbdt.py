@@ -490,9 +490,12 @@ def main():
     ROOT.gPad.Update();
 
     leg = ROOT.TLegend(0.7, 0.75, 0.95, 0.9);
-    leg.AddEntry(sigEff, "a#rightarrow #gamma #gamma","APL");
-    #leg.AddEntry(sigEff, "a#rightarrow #pi^{0} #pi^{0} #pi^{0}","F");
-    #leg.AddEntry(sigEff, "s#rightarrow #pi^{0} #pi^{0}","F");
+    if "axion1" in output:
+        leg.AddEntry(sigEff, "a#rightarrow #gamma #gamma","APL");
+    elif "axion2" in output: 
+        leg.AddEntry(sigEff, "a#rightarrow #pi^{0} #pi^{0} #pi^{0}","APL");
+    elif "scalar1" in output: 
+        leg.AddEntry(sigEff, "s#rightarrow #pi^{0} #pi^{0}","APL");
     leg.AddEntry(bkg0Eff, "#gamma","APL");
     leg.AddEntry(bkg1Eff, "#pi^{0}","APL");
     leg.SetLineStyle(0);
