@@ -80,7 +80,7 @@ def main():
     print ('part1')   
 
     # get root files and convert them to array
-    branch_names = """frac_first,first_lateral_width_eta_w20,first_lateral_width_eta_w3,first_fraction_fside,first_dEs,first_Eratio,second_R_eta,second_R_phi,second_lateral_width_eta_weta2""".split(",")
+    branch_names = """frac_first,first_lateral_width_eta_w20,first_lateral_width_eta_w3,first_fraction_fside,first_dEs,first_Eratio,second_R_eta,second_R_phi,second_lateral_width_eta_weta2,total_e""".split(",")
     branch_labels = {"frac_first" : "$f_{1}$",
             "first_lateral_width_eta_w20" : "$w_{stot}$",
             "first_lateral_width_eta_w3" : "$w_{s3}$",
@@ -89,7 +89,8 @@ def main():
             "first_Eratio" : "$E_{ratio}$",
             "second_R_eta": "$R_{\eta}$",
             "second_R_phi": "$R_{\phi}$",
-            "second_lateral_width_eta_weta2": "$w_{\eta2}$"
+            "second_lateral_width_eta_weta2": "$w_{\eta2}$",
+            "total_e": "$E_{tot}$"
             } 
     branch_ene = """total_e""".split(",")
 
@@ -331,7 +332,7 @@ def main():
 
     print ('Save the importance')   
     importances = bdt.feature_importances_
-    f = open('gbdt_results_9var/'+output+'/output_importance.txt', 'w')
+    f = open('gbdt_results_10var/'+output+'/output_importance.txt', 'w')
     f.write("%-25s%-15s\n"%('Variable Name','Output Importance'))
     for i in range (len(branch_names)):
         f.write("%-25s%-15s\n"%(branch_names[i], importances[i]))
@@ -352,9 +353,9 @@ def main():
 
 
     filepath = 'ROC'
-    plot_correlations("./gbdt_results_9var/"+output+"/", branch_names, branch_labels, train_signal0, train_background0, train_background1)
-    plot_inputs("./gbdt_results_9var/"+output+"/", branch_names, branch_labels, train_signal0, None, train_background0, None, train_background1,None, sigLegend, bg0Legend, bg1Legend)
-    joblib.dump(bdt, './gbdt_results_9var/'+output+'/'+filepath+'/bdt_model.pkl')
+    plot_correlations("./gbdt_results_10var/"+output+"/", branch_names, branch_labels, train_signal0, train_background0, train_background1)
+    plot_inputs("./gbdt_results_10var/"+output+"/", branch_names, branch_labels, train_signal0, None, train_background0, None, train_background1,None, sigLegend, bg0Legend, bg1Legend)
+    joblib.dump(bdt, './gbdt_results_10var/'+output+'/'+filepath+'/bdt_model.pkl')
     compare_train_test(bdt, processLabels, iColForSig, X_train, y_train, X_test, y_test, output, filepath, "", 50, sigLegend, bg0Legend, bg1Legend)
 
 
@@ -379,7 +380,7 @@ def main():
         plt.yticks(rotation=90)
         plt.tight_layout()
         plt.title('Confusion matrix {}-vs-others'.format(processColumns[i]))
-        plt.savefig('./gbdt_results_9var/'+output+'/'+filepath+'/ConfusionMatrix_%i.png'%(i))
+        plt.savefig('./gbdt_results_10var/'+output+'/'+filepath+'/ConfusionMatrix_%i.png'%(i))
 
 
     # Compute ROC curve and area under the curve for each label (one-vs-others)
@@ -402,7 +403,7 @@ def main():
         plt.title('Receiver operating characteristic {}-vs-others'.format(processColumns[i]))
         plt.legend(loc = "lower right")
         plt.grid()
-        plt.savefig('./gbdt_results_9var/'+output+'/'+filepath+'/ROC_%i.png'%(i))
+        plt.savefig('./gbdt_results_10var/'+output+'/'+filepath+'/ROC_%i.png'%(i))
 
 
     # Compute recall (only for the test sample here)
@@ -420,7 +421,7 @@ def main():
         plt.ylabel('Precision/Recall')
         plt.legend()
         plt.grid()
-        plt.savefig('./gbdt_results_9var/'+output+'/'+filepath+'/PRC_%i.png'%(i))
+        plt.savefig('./gbdt_results_10var/'+output+'/'+filepath+'/PRC_%i.png'%(i))
 
 
     # plot efficiency
@@ -534,7 +535,7 @@ def main():
         sigLabel = "scalar1"
     
 
-    path = "./gbdt_results_9var/"+output+"/"+filepath+"/";
+    path = "./gbdt_results_10var/"+output+"/"+filepath+"/";
     effname_binned = "eff_%ibins"%(len(ene_bins)-1)
     
     plot_eff(output, sigEff, bkg0Eff, bkg1Eff, path, "eff")
@@ -735,7 +736,7 @@ def compare_train_test(clf, processLabels, iColForSig, X_train, y_train, X_test,
     plt.xlabel("BDT score")
     plt.ylabel("Normalized Unit")
     plt.legend(loc='best')
-    plt.savefig("./gbdt_results_9var/"+output+"/"+savepath+"/BDTscore"+label+".png")
+    plt.savefig("./gbdt_results_10var/"+output+"/"+savepath+"/BDTscore"+label+".png")
 #    plt.show()
 
 
