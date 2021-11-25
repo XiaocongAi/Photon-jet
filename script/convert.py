@@ -7,6 +7,7 @@ author: Luke de Oliveira (lukedeo@manifold.ai)
 """
 
 import os
+#from ROOT import *
 import ROOT 
 
 def expand(s):
@@ -44,12 +45,14 @@ import pandas as pd
 import numpy as np
 from h5py import File as HDF5File
 
-LAYER_SPECS = [(3, 96), (12, 12), (12, 6)]
+#LAYER_SPECS = [(3, 96), (12, 12), (12, 6)]
+LAYER_SPECS = [(4, 16), (4, 128), (16, 16), (16, 8)]
 
 LAYER_DIV = np.cumsum(map(np.prod, LAYER_SPECS)).tolist()
 LAYER_DIV = zip([0] + LAYER_DIV, LAYER_DIV)
 
-OVERFLOW_BINS = 3
+#OVERFLOW_BINS = 3
+OVERFLOW_BINS = 4 
 
 
 def write_out_file(infile, outfile, tree=None):
